@@ -1,5 +1,5 @@
 const supabase = window.supabase.createClient(
-  'https://yodxhcgjwyeuxlvbjxhc.supabase.co/rest/v1/',
+  'https://yodxhcgjwyeuxlvbjxhc.supabase.co',
   'sb_publishable_nqH6iq7Fjixse097VQFwYw_JaQ6nUKa'
 );
 const KEY = "decision-shelf-v1";
