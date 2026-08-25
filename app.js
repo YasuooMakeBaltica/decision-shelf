@@ -1,4 +1,4 @@
-const supabase = window.supabase.createClient(
+const supabaseClient = window.supabase.createClient(
   'https://yodxhcgjwyeuxlvbjxhc.supabase.co',
   'sb_publishable_nqH6iq7Fjixse097VQFwYw_JaQ6nUKa'
 );
