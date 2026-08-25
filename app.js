@@ -1,10 +1,12 @@
+const supabase = window.supabase.createClient(
+  'https://yodxhcgjwyeuxlvbjxhc.supabase.co/rest/v1/',
+  'sb_publishable_nqH6iq7Fjixse097VQFwYw_JaQ6nUKa'
+);
 const KEY = "decision-shelf-v1";
-const SESSION_KEY = "decision-shelf-session";
 const $ = (selector) => document.querySelector(selector);
 let activeFilter = "all";
-let currentUser = JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
-let decisions = currentUser ? JSON.parse(localStorage.getItem(`${KEY}-${currentUser.email}`) || "[]") : [];
-
+let currentUser = null;
+let decisions = [];
 const formatDate = (value) => new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", year: "numeric" }).format(new Date(`${value}T12:00:00`));
 const escape = (value = "") => value.replace(/[&<>'"]/g, char => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", "'":"&#39;", '"':"&quot;" })[char]);
 const save = () => currentUser && localStorage.setItem(`${KEY}-${currentUser.email}`, JSON.stringify(decisions));
@@ -51,17 +53,40 @@ function setAuthMode(mode) {
   $(".auth-submit").innerHTML = `${mode === "signup" ? "Create my shelf" : "Open my shelf"} <span>→</span>`;
 }
 document.querySelectorAll(".auth-tab").forEach(button => button.onclick = () => setAuthMode(button.dataset.mode));
-$("#auth-form").onsubmit = event => {
-  event.preventDefault(); const data = Object.fromEntries(new FormData(event.target)); const email = data.email.trim().toLowerCase();
-  const accounts = JSON.parse(localStorage.getItem(ACCOUNTS_KEY) || "[]"); let account = accounts.find(item => item.email === email);
+$("#auth-form").onsubmit = async event => {
+  event.preventDefault();
+  const data = Object.fromEntries(new FormData(event.target));
+  const email = data.email.trim().toLowerCase();
+
   if (authMode === "signup") {
-    if (account) return alert("An account with that email already exists. Try signing in.");
-    account = { name:data.name.trim(), email, password:data.password }; accounts.push(account); localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
-  } else if (!account || account.password !== data.password) return alert("That email or password doesn't match this browser's account.");
-  currentUser = { name:account.name, email:account.email }; localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser)); showApp();
+    const { error } = await supabase.auth.signUp({
+      email,
+      password: data.password,
+      options: { data: { name: data.name.trim() } }
+    });
+    if (error) return alert(error.message);
+    alert("Check your email to verify your account before signing in!");
+    setAuthMode("signin");
+  } else {
+    const { error } = await supabase.auth.signInWithPassword({ email, password: data.password });
+    if (error) return alert(error.message);
+  }
 };
-$("#sign-out").onclick = () => { localStorage.removeItem(SESSION_KEY); currentUser = null; showAuth(); setAuthMode("signin"); };
+
+$("#sign-in-github").onclick = async () => {
+  const { error } = await supabase.auth.signInWithOAuth({ provider: "github" });
+  if (error) alert(error.message);
+};
+$("#sign-out").onclick = async () => { await supabase.auth.signOut(); };
 if (localStorage.getItem("decision-shelf-theme") === "dark") document.body.classList.add("dark");
 $("#today").textContent = new Intl.DateTimeFormat(undefined, { weekday:"long", month:"long", day:"numeric" }).format(new Date());
-showAuth();
-setAuthMode("signin");
+supabase.auth.onAuthStateChange((event, session) => {
+  if (session) {
+    currentUser = { name: session.user.user_metadata?.name || session.user.email, email: session.user.email };
+    showApp();
+  } else {
+    currentUser = null;
+    showAuth();
+    setAuthMode("signin");
+  }
+});
