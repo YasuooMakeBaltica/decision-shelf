@@ -1,5 +1,4 @@
 const KEY = "decision-shelf-v1";
-const ACCOUNTS_KEY = "decision-shelf-accounts";
 const SESSION_KEY = "decision-shelf-session";
 const $ = (selector) => document.querySelector(selector);
 let activeFilter = "all";
