@@ -21,7 +21,8 @@
           <label>Email<input name="email" type="email" autocomplete="email" placeholder="you@example.com" required /></label>
           <label>Password<input name="password" type="password" autocomplete="new-password" minlength="4" placeholder="At least 4 characters" required /></label>
           <p class="auth-note" id="auth-note">Your account is stored privately in this browser.</p>
-          <button class="auth-submit" type="submit">Create my shelf <span>→</span></button>
+                   <button class="auth-submit" type="submit">Create my shelf <span>→</span></button>
+          <button type="button" id="sign-in-github" class="auth-submit">Sign in with GitHub</button>
         </form>
       </div>
       <div class="auth-art"><div class="orb orb-one"></div><div class="orb orb-two"></div><div class="quote-card"><span>“</span><p>Not every decision needs certainty.<br />It needs <em>attention.</em></p></div></div>
@@ -81,6 +82,7 @@
       </form>
     </dialog>
     <template id="empty-state"><div class="empty-state"><h2>Your shelf is clear.</h2><p>The decisions worth learning from are usually worth writing down.</p><button class="text-button">Add your first decision →</button></div></template>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="app.js"></script>
   </body>
 </html>
