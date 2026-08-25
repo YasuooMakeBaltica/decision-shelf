@@ -59,7 +59,7 @@ $("#auth-form").onsubmit = async event => {
   const email = data.email.trim().toLowerCase();
 
   if (authMode === "signup") {
-    const { error } = await supabase.auth.signUp({
+    const { error } = await supabaseClient.auth.signUp({
       email,
       password: data.password,
       options: { data: { name: data.name.trim() } }
@@ -68,19 +68,19 @@ $("#auth-form").onsubmit = async event => {
     alert("Check your email to verify your account before signing in!");
     setAuthMode("signin");
   } else {
-    const { error } = await supabase.auth.signInWithPassword({ email, password: data.password });
+    const { error } = await supabaseClient.auth.signInWithPassword({ email, password: data.password });
     if (error) return alert(error.message);
   }
 };
 
 $("#sign-in-github").onclick = async () => {
-  const { error } = await supabase.auth.signInWithOAuth({ provider: "github" });
+  const { error } = await supabaseClient.auth.signInWithOAuth({ provider: "github" });
   if (error) alert(error.message);
 };
-$("#sign-out").onclick = async () => { await supabase.auth.signOut(); };
+$("#sign-out").onclick = async () => { await supabaseClient.auth.signOut(); };
 if (localStorage.getItem("decision-shelf-theme") === "dark") document.body.classList.add("dark");
 $("#today").textContent = new Intl.DateTimeFormat(undefined, { weekday:"long", month:"long", day:"numeric" }).format(new Date());
-supabase.auth.onAuthStateChange((event, session) => {
+supabaseClient.auth.onAuthStateChange((event, session) => {
   if (session) {
     currentUser = { name: session.user.user_metadata?.name || session.user.email, email: session.user.email };
     showApp();
