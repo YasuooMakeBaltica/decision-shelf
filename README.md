@@ -12,5 +12,4 @@ No build step or dependencies are needed. Open `index.html` in a modern browser,
 - Filter decisions that are due for review, unfolding, or closed
 - Record an outcome and reflection
 - Light/dark mode
-- Data stays in browser local storage, with JSON export and import
 
