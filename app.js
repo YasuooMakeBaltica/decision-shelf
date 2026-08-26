@@ -18,6 +18,25 @@ const formatDate = (value) => new Intl.DateTimeFormat(undefined, { month: "short
 const escape = (value = "") => value.replace(/[&<>'"]/g, char => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", "'":"&#39;", '"':"&quot;" })[char]);
 const save = () => currentUser && localStorage.setItem(`${KEY}-${currentUser.email}`, JSON.stringify(decisions));
 const reviewDue = (decision) => !decision.outcome && new Date(`${decision.reviewDate}T23:59:59`) <= new Date();
+function getPreferredTheme() {
+  const stored = localStorage.getItem("decision-shelf-theme");
+  if (stored === "dark" || stored === "light") return stored;
+  return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+function applyTheme(theme) {
+  document.body.classList.toggle("dark", theme === "dark");
+}
+function toggleTheme() {
+  const next = document.body.classList.contains("dark") ? "light" : "dark";
+  applyTheme(next);
+  localStorage.setItem("decision-shelf-theme", next);
+}
+applyTheme(getPreferredTheme());
+if (window.matchMedia) {
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event) => {
+    if (!localStorage.getItem("decision-shelf-theme")) applyTheme(event.matches ? "dark" : "light");
+  });
+}
 
 function render() {
   const shown = decisions.filter(d => activeFilter === "all" || (activeFilter === "review" && reviewDue(d)) || (activeFilter === "open" && !d.outcome) || (activeFilter === "closed" && d.outcome));
