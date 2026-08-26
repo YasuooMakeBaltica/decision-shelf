@@ -53,10 +53,14 @@ function setAuthMode(mode) {
   $(".auth-submit").innerHTML = `${mode === "signup" ? "Create my shelf" : "Open my shelf"} <span>→</span>`;
 }
 document.querySelectorAll(".auth-tab").forEach(button => button.onclick = () => setAuthMode(button.dataset.mode));
+$("#auth-form [name=password]").addEventListener("input", () => { $("#password-error").hidden = true; });
+
 $("#auth-form").onsubmit = async event => {
   event.preventDefault();
   const data = Object.fromEntries(new FormData(event.target));
   const email = data.email.trim().toLowerCase();
+  const errorEl = $("#password-error");
+  errorEl.hidden = true;
 
   if (authMode === "signup") {
     const { error } = await supabaseClient.auth.signUp({
@@ -64,15 +68,17 @@ $("#auth-form").onsubmit = async event => {
       password: data.password,
       options: { data: { name: data.name.trim() } }
     });
-    if (error) return alert(error.message);
-    alert("Check your email to verify your account before signing in!");
-    setAuthMode("signin");
+    if (error) { errorEl.textContent = error.message; errorEl.hidden = false; return; }
+    window.location.href = `check-email.html?email=${encodeURIComponent(email)}`;
   } else {
     const { error } = await supabaseClient.auth.signInWithPassword({ email, password: data.password });
-    if (error) return alert(error.message);
+    if (error) {
+      errorEl.textContent = "That password doesn't match this email. Try again.";
+      errorEl.hidden = false;
+      return;
+    }
   }
 };
-
 $("#sign-in-github").onclick = async () => {
   const { error } = await supabaseClient.auth.signInWithOAuth({ provider: "github" });
   if (error) alert(error.message);
