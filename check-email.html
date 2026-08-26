@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Check your inbox — Decision Shelf</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <section class="auth-screen">
+      <div class="auth-panel">
+        <a class="brand" href="index.html" aria-label="Decision Shelf"><span class="brand-mark">↗</span><span>decision<br /><em>shelf</em></span></a>
+        <div class="auth-copy">
+          <p class="eyebrow">Almost there</p>
+          <h1>Check your inbox.</h1>
+          <p id="check-email-text">We sent a confirmation link to your email. Click it to finish setting up your shelf.</p>
+        </div>
+        <a class="auth-submit" href="index.html" style="text-align:center; text-decoration:none; display:block;">Back to sign in <span>→</span></a>
+      </div>
+      <div class="auth-art">
+        <div class="orb orb-one"></div><div class="orb orb-two"></div>
+        <div class="quote-card"><span>"</span><p>Not every decision needs certainty.<br />It needs <em>attention.</em></p></div>
+      </div>
+    </section>
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const email = params.get("email");
+      if (email) {
+        document.getElementById("check-email-text").textContent =
+          `We sent a confirmation link to ${email}. Click it to finish setting up your shelf.`;
+      }
+    </script>
+  </body>
+</html>
