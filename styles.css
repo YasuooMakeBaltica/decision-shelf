@@ -16,8 +16,11 @@ body.dark{--soft-ink:#c2c2c2;--line:#303030}body.dark input,body.dark textarea,b
 .auth-submit{background:var(--accent);color:#fff}
 .field-error {
   color: #e5484d;
-  font-size: 13px;
-  margin: -12px 0 8px 0;
+  font-size: 12px;
+  margin: 6px 0 0 0;
+  line-height: 1.4;
   display: block;
 }
 .field-error[hidden] { display: none; }
+.auth-panel-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.auth-panel-top .icon-button{flex-shrink:0}
