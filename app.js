@@ -76,7 +76,8 @@ function setAuthMode(mode) {
   $(".name-field").hidden = mode === "signin"; $(".name-field input").required = mode === "signup";
   $("#auth-form [name=password]").autocomplete = mode === "signup" ? "new-password" : "current-password";
   $("#auth-form [name=password]").placeholder = mode === "signup" ? "At least 4 characters" : "Your password";
-  $("#auth-note").textContent = mode === "signup" ? "Your account is stored privately in this browser." : "Sign in on the browser where you created your shelf.";
+  $("#auth-note").textContent = mode === "signup" ? "We'll email you a confirmation link — click it on any device to finish setting up." : "Sign in with the same email and password you signed up with.";
+  $("#password-error").hidden = true;
   $(".auth-submit").innerHTML = `${mode === "signup" ? "Create my shelf" : "Open my shelf"} <span>→</span>`;
 }
 document.querySelectorAll(".auth-tab").forEach(button => button.onclick = () => setAuthMode(button.dataset.mode));
@@ -90,10 +91,13 @@ $("#auth-form").onsubmit = async event => {
   errorEl.hidden = true;
 
   if (authMode === "signup") {
-    const { error } = await supabaseClient.auth.signUp({
+      const { error } = await supabaseClient.auth.signUp({
       email,
       password: data.password,
-      options: { data: { name: data.name.trim() } }
+      options: {
+        data: { name: data.name.trim() },
+        emailRedirectTo: new URL("index.html", window.location.href).href
+      }
     });
     if (error) { errorEl.textContent = error.message; errorEl.hidden = false; return; }
     window.location.href = `check-email.html?email=${encodeURIComponent(email)}`;
@@ -107,11 +111,13 @@ $("#auth-form").onsubmit = async event => {
   }
 };
 $("#sign-in-github").onclick = async () => {
-  const { error } = await supabaseClient.auth.signInWithOAuth({ provider: "github" });
+  const { error } = await supabaseClient.auth.signInWithOAuth({
+    provider: "github",
+    options: { redirectTo: new URL("index.html", window.location.href).href }
+  });
   if (error) alert(error.message);
 };
 $("#sign-out").onclick = async () => { await supabaseClient.auth.signOut(); };
-if (localStorage.getItem("decision-shelf-theme") === "dark") document.body.classList.add("dark");
 $("#today").textContent = new Intl.DateTimeFormat(undefined, { weekday:"long", month:"long", day:"numeric" }).format(new Date());
 supabaseClient.auth.onAuthStateChange((event, session) => {
   if (session) {
