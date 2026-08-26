@@ -60,7 +60,8 @@ $("#open-form").onclick = openForm; $("#close-form").onclick = () => $("#decisio
 $("#decision-form").onsubmit = event => { event.preventDefault(); const data = Object.fromEntries(new FormData(event.target)); decisions.push({ ...data, id: crypto.randomUUID(), createdAt: new Date().toISOString() }); save(); event.target.closest("dialog").close(); render(); };
 $("#review-form").onsubmit = event => { event.preventDefault(); const data = Object.fromEntries(new FormData(event.target)); const d = decisions.find(item => item.id === data.id); Object.assign(d, { outcome:data.outcome, reflection:data.reflection, reviewedAt:new Date().toISOString() }); save(); event.target.closest("dialog").close(); render(); };
 document.querySelectorAll(".nav-link").forEach(button => button.onclick = () => { activeFilter = button.dataset.filter; document.querySelectorAll(".nav-link").forEach(item => item.classList.toggle("active", item === button)); render(); });
-$("#theme-toggle").onclick = () => { document.body.classList.toggle("dark"); localStorage.setItem("decision-shelf-theme", document.body.classList.contains("dark") ? "dark" : "light"); };
+$("#theme-toggle").onclick = toggleTheme;
+$("#theme-toggle-auth").onclick = toggleTheme;
 $("#export-data").onclick = () => { const url = URL.createObjectURL(new Blob([JSON.stringify(decisions, null, 2)], {type:"application/json"})); const link = Object.assign(document.createElement("a"), {href:url, download:"decision-shelf-backup.json"}); link.click(); URL.revokeObjectURL(url); };
 $("#import-data").onchange = async event => { try { const data = JSON.parse(await event.target.files[0].text()); if (!Array.isArray(data)) throw Error(); decisions = data; save(); render(); } catch { alert("That file isn't a Decision Shelf backup."); } event.target.value = ""; };
 function showApp() {
