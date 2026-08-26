@@ -1,6 +1,13 @@
 const supabaseClient = window.supabase.createClient(
   'https://yodxhcgjwyeuxlvbjxhc.supabase.co',
-  'sb_publishable_nqH6iq7Fjixse097VQFwYw_JaQ6nUKa'
+  'sb_publishable_nqH6iq7Fjixse097VQFwYw_JaQ6nUKa',
+  {
+    auth: {
+      persistSession: true,
+      detectSessionInUrl: true,
+      autoRefreshToken: true
+    }
+  }
 );
 const KEY = "decision-shelf-v1";
 const $ = (selector) => document.querySelector(selector);
