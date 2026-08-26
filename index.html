@@ -14,9 +14,12 @@
   </head>
   <body>
     <section class="auth-screen" id="auth-screen">
-      <div class="auth-panel">
-        <a class="brand" href="#" aria-label="Decision Shelf"><span class="brand-mark">↗</span><span>decision<br /><em>shelf</em></span></a>
-        <div class="auth-copy"><p class="eyebrow">A private thinking space</p><h1>Make better choices.<br /><em>Keep the receipts.</em></h1><p>Build a personal record of the choices shaping your life—and the wisdom they leave behind.</p></div>
+     <div class="auth-panel">
+  <div class="auth-panel-top">
+    <a class="brand" href="#" aria-label="Decision Shelf"><span class="brand-mark">↗</span><span>decision<br /><em>shelf</em></span></a>
+    <button class="icon-button" id="theme-toggle-auth" aria-label="Toggle color theme">◐</button>
+  </div>
+  <div class="auth-copy"><p class="eyebrow">A private thinking space</p><h1>Make better choices.<br /><em>Keep the receipts.</em></h1><p>Build a personal record of the choices shaping your life—and the wisdom they leave behind.</p></div>
         <form id="auth-form" class="auth-form">
           <div class="auth-tabs"><button type="button" class="auth-tab active" data-mode="signup">Create account</button><button type="button" class="auth-tab" data-mode="signin">Sign in</button></div>
           <label class="name-field">Your name<input name="name" autocomplete="name" placeholder="Alex Morgan" required /></label>
